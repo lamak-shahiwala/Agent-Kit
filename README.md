@@ -1,3 +1,27 @@
+### You need to add .env.local at the root of this project
+
+## .env.local file:
+
+Get keys from OpenAI Platform: https://platform.openai.com/api-keys
+
+Get keys from Gemini Platform: https://aistudio.google.com/
+
+Get keys from Privy Dashboard: https://dashboard.privy.io/
+
+Get keys from CDP Portal: https://portal.cdp.coinbase.com/
+
+#### Required
+
+OPENAI_API_KEY=
+
+GEMINI_API_KEY=
+
+PRIVY_APP_ID=
+
+PRIVY_APP_SECRET=
+
+---
+
 # Onchain Agent Powered by AgentKit
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with `create-onchain-agent`.
