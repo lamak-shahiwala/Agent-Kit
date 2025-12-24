@@ -1,5 +1,4 @@
-// app/layout.tsx
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { appConfig } from "@/packages/shared/config/app";
 import { themeConfig } from "@/packages/shared/config/theme";
@@ -9,13 +8,22 @@ export const metadata: Metadata = {
   description: appConfig.appDescription,
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  // Fix for some mobile browsers to handle keyboard resizing nicely
+  interactiveWidget: "resizes-content",
+};
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-screen">
+    <html lang="en" className="h-[100dvh]">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -50,15 +58,15 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="h-screen flex flex-col overflow-hidden antialiased font-body"
+        className="h-[100dvh] flex flex-col overflow-hidden antialiased font-body"
         style={{
           backgroundColor: themeConfig.bg,
           color: themeConfig.textPrimary,
         }}
       >
-        {/* Fixed header - consistent height across devices */}
+        {/* Fixed header */}
         <header
-          className="h-14 sm:h-16 shrink-0 backdrop-blur-sm"
+          className="h-14 sm:h-16 shrink-0 backdrop-blur-sm z-10"
           style={{
             backgroundColor: `${themeConfig.bg}f2`,
           }}
@@ -73,9 +81,9 @@ export default function RootLayout({
           </div>
         </header>
 
-        {/* Main area */}
+        {/* Main area - Flex 1 ensures it takes remaining height */}
         <main
-          className="flex-1 flex justify-center overflow-hidden"
+          className="flex-1 flex justify-center overflow-hidden relative w-full"
           style={{ backgroundColor: themeConfig.bg }}
         >
           {children}

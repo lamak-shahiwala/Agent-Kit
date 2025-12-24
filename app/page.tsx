@@ -14,17 +14,19 @@ export default function Home() {
   const endRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Auto-scroll to bottom
   useEffect(() => {
     if (messages.length > 0) {
       endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [messages, isThinking]);
 
+  // Auto-resize textarea
   useEffect(() => {
     if (!textareaRef.current) return;
     textareaRef.current.style.height = "auto";
     textareaRef.current.style.height =
-      Math.min(textareaRef.current.scrollHeight, 200) + "px";
+      Math.min(textareaRef.current.scrollHeight, 160) + "px";
   }, [input]);
 
   const handleSend = async () => {
@@ -44,16 +46,19 @@ export default function Home() {
 
   return (
     <div
-      className="h-full w-full flex justify-center"
+      className="h-full w-full flex justify-center overflow-hidden"
       style={{ backgroundColor: themeConfig.bg }}
     >
-      {/* Responsive container - consistent max-widths */}
-      <div className="h-full w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex flex-col px-4 sm:px-6 md:px-8 lg:px-8 xl:px-8">
+      {/* The 'h-full flex flex-col' here is key. 
+        Because the parent layout uses 100dvh and the viewport is set to resize-content,
+        this container will shrink when the keyboard appears, keeping the input at the bottom.
+      */}
+      <div className="h-full w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex flex-col px-3 sm:px-6 md:px-8 relative">
         {messages.length > 0 ? (
           <>
-            {/* Messages - scrollable area only */}
-            <div className="flex-1 overflow-y-auto scrollbar-hide pt-4 sm:pt-5 md:pt-6 pb-3 sm:pb-4">
-              <div className="flex flex-col gap-4 sm:gap-5 md:gap-6">
+            {/* Messages Area */}
+            <div className="flex-1 overflow-y-auto scrollbar-hide pt-2 sm:pt-4 pb-2">
+              <div className="flex flex-col gap-4 sm:gap-6">
                 {messages.map((msg, i) => {
                   const isUser = msg.sender === "user";
                   return (
@@ -63,9 +68,8 @@ export default function Home() {
                         isUser ? "justify-end" : "justify-start"
                       }`}
                     >
-                      {/* Consistent bubble design with rounded-2xl */}
                       <div
-                        className="max-w-[90%] sm:max-w-[85%] md:max-w-[80%] lg:max-w-[75%] leading-6 sm:leading-7 rounded-2xl px-4 py-2.5 sm:px-5 sm:py-3 md:px-6 md:py-3.5 shadow-sm"
+                        className="max-w-[92%] sm:max-w-[85%] md:max-w-[75%] leading-relaxed rounded-2xl px-4 py-2.5 sm:px-5 sm:py-3 shadow-sm"
                         style={{
                           backgroundColor: isUser
                             ? themeConfig.userBubble
@@ -75,13 +79,13 @@ export default function Home() {
                       >
                         {!isUser && (
                           <div
-                            className="mb-1 opacity-80 text-[10px] sm:text-xs font-display font-bold uppercase tracking-[0.15em]"
+                            className="mb-1 opacity-80 text-[10px] sm:text-xs font-display font-bold uppercase tracking-widest"
                             style={{ color: themeConfig.textSecondary }}
                           >
                             {appConfig.appName}
                           </div>
                         )}
-                        <div className="whitespace-pre-wrap markdown-content text-sm sm:text-base">
+                        <div className="whitespace-pre-wrap markdown-content text-[15px] sm:text-base">
                           <ReactMarkdown>{msg.text}</ReactMarkdown>
                         </div>
                       </div>
@@ -90,7 +94,7 @@ export default function Home() {
                 })}
 
                 {isThinking && (
-                  <div className="flex w-full justify-start px-1 pb-20 sm:pb-24">
+                  <div className="flex w-full justify-start px-2">
                     <div
                       className="flex items-center gap-1.5"
                       style={{ color: themeConfig.thinkingText }}
@@ -101,15 +105,14 @@ export default function Home() {
                     </div>
                   </div>
                 )}
-
-                <div ref={endRef} />
+                <div ref={endRef} className="h-4" />
               </div>
             </div>
 
-            {/* Input - pinned at bottom with rounded-[2.5rem] corners */}
-            <div className="shrink-0 pb-4 sm:pb-5 md:pb-6 pt-2 sm:pt-3">
+            {/* Input Area - Fixed at the bottom of the flex container */}
+            <div className="shrink-0 pb-3 sm:pb-6 pt-2">
               <div
-                className="rounded-[2.5rem] border flex items-end gap-3 px-4 sm:px-5 py-2.5 sm:py-3 shadow-md"
+                className="rounded-[2rem] sm:rounded-[2.5rem] border flex items-end gap-2 sm:gap-3 px-3 sm:px-5 py-1.5 sm:py-3 shadow-md transition-all"
                 style={{
                   backgroundColor: themeConfig.surface,
                   borderColor: themeConfig.border,
@@ -123,7 +126,7 @@ export default function Home() {
                   disabled={isThinking}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="flex-1 max-h-40 py-2 resize-none bg-transparent outline-none overflow-y-auto min-h-10 text-sm sm:text-base"
+                  className="flex-1 max-h-[150px] py-2.5 resize-none bg-transparent outline-none overflow-y-auto min-h-[44px] text-base"
                   style={{
                     color: themeConfig.textPrimary,
                   }}
@@ -131,17 +134,14 @@ export default function Home() {
                 <button
                   onClick={handleSend}
                   disabled={isThinking || !input.trim()}
-                  className="h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all disabled:opacity-30 disabled:grayscale hover:opacity-90 shrink-0"
+                  className="h-9 w-9 sm:h-10 sm:w-10 mb-1 rounded-full flex items-center justify-center transition-all disabled:opacity-30 disabled:grayscale hover:opacity-90 shrink-0"
                   style={{ backgroundColor: themeConfig.primaryColor }}
                 >
-                  <FaArrowUp
-                    color="white"
-                    className="w-4 h-4 sm:w-4.5 sm:h-4.5"
-                  />
+                  <FaArrowUp color="white" className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
               <p
-                className="mt-2 text-[10px] sm:text-xs text-center"
+                className="mt-2 text-[10px] sm:text-xs text-center px-4 hidden sm:block"
                 style={{ color: themeConfig.textSecondary }}
               >
                 {appConfig.footerText}
@@ -149,21 +149,20 @@ export default function Home() {
             </div>
           </>
         ) : (
-          // Empty state - centered welcome + input
-          <div className="flex-1 flex flex-col items-center justify-center gap-10 sm:gap-12 py-8">
-            <div className="text-center px-4 sm:px-6 max-w-2xl">
+          /* Empty State - Using flex-1 to keep input centered/bottom responsive */
+          <div className="flex-1 flex flex-col items-center justify-center sm:justify-center gap-8 sm:gap-12 pb-4">
+            <div className="text-center px-4 max-w-xl">
               <h1
-                className="text-2xl sm:text-3xl md:text-4xl font-display font-medium tracking-tight"
+                className="text-3xl sm:text-4xl font-display font-medium tracking-tight mb-2"
                 style={{ color: themeConfig.textPrimary }}
               >
                 {appConfig.welcomeText}
               </h1>
             </div>
 
-            {/* Centered input with rounded-[2.5rem] corners */}
-            <div className="w-full max-w-xl sm:max-w-2xl md:max-w-3xl px-4 sm:px-6">
+            <div className="w-full max-w-2xl px-2 sm:px-0">
               <div
-                className="rounded-[2.5rem] border flex items-end gap-3 px-4 sm:px-5 py-2.5 sm:py-3 shadow-md"
+                className="rounded-[2rem] sm:rounded-[2.5rem] border flex items-end gap-2 sm:gap-3 px-3 sm:px-5 py-1.5 sm:py-3 shadow-md"
                 style={{
                   backgroundColor: themeConfig.surface,
                   borderColor: themeConfig.border,
@@ -177,7 +176,7 @@ export default function Home() {
                   disabled={isThinking}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  className="flex-1 max-h-40 py-2 resize-none bg-transparent outline-none overflow-y-auto min-h-10 text-sm sm:text-base"
+                  className="flex-1 max-h-[150px] py-2.5 resize-none bg-transparent outline-none overflow-y-auto min-h-[44px] text-base"
                   style={{
                     color: themeConfig.textPrimary,
                   }}
@@ -185,17 +184,14 @@ export default function Home() {
                 <button
                   onClick={handleSend}
                   disabled={isThinking || !input.trim()}
-                  className="h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all disabled:opacity-30 disabled:grayscale hover:opacity-90 shrink-0"
+                  className="h-9 w-9 sm:h-10 sm:w-10 mb-1 rounded-full flex items-center justify-center transition-all disabled:opacity-30 disabled:grayscale hover:opacity-90 shrink-0"
                   style={{ backgroundColor: themeConfig.primaryColor }}
                 >
-                  <FaArrowUp
-                    color="white"
-                    className="w-4 h-4 sm:w-4.5 sm:h-4.5"
-                  />
+                  <FaArrowUp color="white" className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
               <p
-                className="mt-2 text-[10px] sm:text-xs text-center"
+                className="mt-3 text-[10px] sm:text-xs text-center px-4"
                 style={{ color: themeConfig.textSecondary }}
               >
                 {appConfig.footerText}
