@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 import { appConfig } from "@/packages/shared/config/app";
@@ -14,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-screen">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -26,47 +27,59 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400..800&family=Funnel+Sans:wght@300..800&display=swap"
           rel="stylesheet"
         />
-      </head>
-      <body className="antialiased bg-app-bg text-text-main transition-colors duration-200">
         <style
           dangerouslySetInnerHTML={{
             __html: `
-          :root {
-            --font-body: 'Funnel Sans', sans-serif;
-            --font-display: 'Funnel Display', sans-serif;
-
-            --primary-color: ${themeConfig.primaryColor};
-            --bg-color: ${themeConfig.bgLight};
-            --surface-color: ${themeConfig.surfaceLight};
-            --text-primary: ${themeConfig.textPrimaryLight};
-            --text-secondary: ${themeConfig.textSecondaryLight};
-            --text-placeholder: ${themeConfig.textPlaceholderLight};
-            --border-color: ${themeConfig.borderLight};
-            --thinking-color: ${themeConfig.thinkingTextLight};
-          }
-          @media (prefers-color-scheme: dark) {
             :root {
-              --bg-color: ${themeConfig.bgDark};
-              --surface-color: ${themeConfig.surfaceDark};
-              --text-primary: ${themeConfig.textPrimaryDark};
-              --text-secondary: ${themeConfig.textSecondaryDark};
-              --text-placeholder: ${themeConfig.textPlaceholderDark};
-              --border-color: ${themeConfig.borderDark};
-              --thinking-color: ${themeConfig.thinkingTextDark};
+              --font-body: 'Funnel Sans', sans-serif;
+              --font-display: 'Funnel Display', sans-serif;
+              
+              --primary-color: ${themeConfig.primaryColor};
+              --bg-color: ${themeConfig.bg};
+              --surface-color: ${themeConfig.surface};
+              --text-primary: ${themeConfig.textPrimary};
+              --text-secondary: ${themeConfig.textSecondary};
+              --text-placeholder: ${themeConfig.textPlaceholder};
+              --border-color: ${themeConfig.border};
+              --thinking-color: ${themeConfig.thinkingText};
+              --user-bubble: ${themeConfig.userBubble};
+              --bot-bubble: ${themeConfig.botBubble};
             }
-          }
-        `,
+          `,
           }}
         />
-        <header className="fixed top-0 left-0 w-full flex items-center px-6 py-4 z-50">
-          <div className="flex items-center gap-2">
-            <span className="font-display font-semibold text-2xl tracking-tight text-text-main">
+      </head>
+      <body
+        className="h-screen flex flex-col overflow-hidden antialiased font-body"
+        style={{
+          backgroundColor: themeConfig.bg,
+          color: themeConfig.textPrimary,
+        }}
+      >
+        {/* Fixed header - consistent height across devices */}
+        <header
+          className="h-14 sm:h-16 shrink-0 backdrop-blur-sm"
+          style={{
+            backgroundColor: `${themeConfig.bg}f2`,
+          }}
+        >
+          <div className="h-full mx-auto max-w-7xl flex items-center px-4 sm:px-6 md:px-8 gap-2">
+            <span
+              className="font-display font-semibold text-lg sm:text-xl tracking-tight truncate"
+              style={{ color: themeConfig.textPrimary }}
+            >
               {appConfig.appName}
             </span>
           </div>
         </header>
 
-        {children}
+        {/* Main area */}
+        <main
+          className="flex-1 flex justify-center overflow-hidden"
+          style={{ backgroundColor: themeConfig.bg }}
+        >
+          {children}
+        </main>
       </body>
     </html>
   );

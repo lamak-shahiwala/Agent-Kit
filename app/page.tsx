@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { useAgent } from "./hooks/useAgent";
 import { appConfig } from "@/packages/shared/config/app";
 import { themeConfig } from "@/packages/shared/config/theme";
+import { FaArrowUp } from "react-icons/fa6";
 
 export default function Home() {
   const [input, setInput] = useState("");
@@ -15,7 +16,7 @@ export default function Home() {
 
   useEffect(() => {
     if (messages.length > 0) {
-      endRef.current?.scrollIntoView({ behavior: "smooth" });
+      endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, [messages, isThinking]);
 
@@ -41,100 +42,168 @@ export default function Home() {
     }
   };
 
-  const getBubbleStyle = (isUser: boolean) => {
-    return {
-      backgroundColor: isUser ? "var(--user-bubble)" : "var(--bot-bubble)",
-    };
-  };
-
   return (
-    <main
-      className="flex flex-col h-screen bg-app-bg overflow-hidden"
-      style={
-        {
-          "--user-bubble": themeConfig.userBubbleLight,
-          "--bot-bubble": themeConfig.botBubbleLight,
-        } as React.CSSProperties
-      }
+    <div
+      className="h-full w-full flex justify-center"
+      style={{ backgroundColor: themeConfig.bg }}
     >
-      <div className="h-12 lg:h-5 shrink-0" />
-      <div className="flex-1 overflow-y-auto px-4 scrollbar-hide">
+      {/* Responsive container - consistent max-widths */}
+      <div className="h-full w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex flex-col px-4 sm:px-6 md:px-8 lg:px-8 xl:px-8">
         {messages.length > 0 ? (
-          <div className="max-w-2xl mx-auto flex flex-col gap-6 py-4">
-            {messages.map((msg, i) => {
-              const isUser = msg.sender === "user";
-              return (
-                <div
-                  key={i}
-                  className={`flex w-full ${
-                    isUser ? "justify-end" : "justify-start"
-                  }`}
-                >
-                  <div
-                    className={`max-w-[85%] leading-7 rounded-2xl px-5 py-2.5 text-text-main`}
-                    style={getBubbleStyle(isUser)}
-                  >
-                    {!isUser && (
-                      <div className="mb-1 opacity-80 text-xs font-display font-bold uppercase tracking-widest text-text-sec">
-                        {appConfig.appName}
+          <>
+            {/* Messages - scrollable area only */}
+            <div className="flex-1 overflow-y-auto scrollbar-hide pt-4 sm:pt-5 md:pt-6 pb-3 sm:pb-4">
+              <div className="flex flex-col gap-4 sm:gap-5 md:gap-6">
+                {messages.map((msg, i) => {
+                  const isUser = msg.sender === "user";
+                  return (
+                    <div
+                      key={i}
+                      className={`flex w-full ${
+                        isUser ? "justify-end" : "justify-start"
+                      }`}
+                    >
+                      {/* Consistent bubble design with rounded-2xl */}
+                      <div
+                        className="max-w-[90%] sm:max-w-[85%] md:max-w-[80%] lg:max-w-[75%] leading-6 sm:leading-7 rounded-2xl px-4 py-2.5 sm:px-5 sm:py-3 md:px-6 md:py-3.5 shadow-sm"
+                        style={{
+                          backgroundColor: isUser
+                            ? themeConfig.userBubble
+                            : themeConfig.botBubble,
+                          color: themeConfig.textPrimary,
+                        }}
+                      >
+                        {!isUser && (
+                          <div
+                            className="mb-1 opacity-80 text-[10px] sm:text-xs font-display font-bold uppercase tracking-[0.15em]"
+                            style={{ color: themeConfig.textSecondary }}
+                          >
+                            {appConfig.appName}
+                          </div>
+                        )}
+                        <div className="whitespace-pre-wrap markdown-content text-sm sm:text-base">
+                          <ReactMarkdown>{msg.text}</ReactMarkdown>
+                        </div>
                       </div>
-                    )}
-                    <div className="whitespace-pre-wrap markdown-content">
-                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    </div>
+                  );
+                })}
+
+                {isThinking && (
+                  <div className="flex w-full justify-start px-1 pb-20 sm:pb-24">
+                    <div
+                      className="flex items-center gap-1.5"
+                      style={{ color: themeConfig.thinkingText }}
+                    >
+                      <div className="animate-bounce w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-current" />
+                      <div className="animate-bounce w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-current [animation-delay:0.2s]" />
+                      <div className="animate-bounce w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-current [animation-delay:0.4s]" />
                     </div>
                   </div>
-                </div>
-              );
-            })}
-            {isThinking && (
-              <div className="flex w-full justify-start px-1">
-                <div className="flex items-center gap-1.5 text-thinking">
-                  <div className="animate-bounce w-1 h-1 rounded-full bg-current" />
-                  <div className="animate-bounce w-1 h-1 rounded-full bg-current [animation-delay:0.2s]" />
-                  <div className="animate-bounce w-1 h-1 rounded-full bg-current [animation-delay:0.4s]" />
-                </div>
+                )}
+
+                <div ref={endRef} />
               </div>
-            )}
-            <div ref={endRef} className="h-4" />
-          </div>
+            </div>
+
+            {/* Input - pinned at bottom with rounded-[2.5rem] corners */}
+            <div className="shrink-0 pb-4 sm:pb-5 md:pb-6 pt-2 sm:pt-3">
+              <div
+                className="rounded-[2.5rem] border flex items-end gap-3 px-4 sm:px-5 py-2.5 sm:py-3 shadow-md"
+                style={{
+                  backgroundColor: themeConfig.surface,
+                  borderColor: themeConfig.border,
+                }}
+              >
+                <textarea
+                  ref={textareaRef}
+                  rows={1}
+                  value={input}
+                  placeholder={appConfig.inputPlaceholder}
+                  disabled={isThinking}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="flex-1 max-h-40 py-2 resize-none bg-transparent outline-none overflow-y-auto min-h-10 text-sm sm:text-base"
+                  style={{
+                    color: themeConfig.textPrimary,
+                  }}
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={isThinking || !input.trim()}
+                  className="h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all disabled:opacity-30 disabled:grayscale hover:opacity-90 shrink-0"
+                  style={{ backgroundColor: themeConfig.primaryColor }}
+                >
+                  <FaArrowUp
+                    color="white"
+                    className="w-4 h-4 sm:w-4.5 sm:h-4.5"
+                  />
+                </button>
+              </div>
+              <p
+                className="mt-2 text-[10px] sm:text-xs text-center"
+                style={{ color: themeConfig.textSecondary }}
+              >
+                {appConfig.footerText}
+              </p>
+            </div>
+          </>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full opacity-90 -mt-10">
-            <h1 className="text-4xl font-display font-medium tracking-tight text-text-main text-center mb-8">
-              {appConfig.welcomeText}
-            </h1>
+          // Empty state - centered welcome + input
+          <div className="flex-1 flex flex-col items-center justify-center gap-10 sm:gap-12 py-8">
+            <div className="text-center px-4 sm:px-6 max-w-2xl">
+              <h1
+                className="text-2xl sm:text-3xl md:text-4xl font-display font-medium tracking-tight"
+                style={{ color: themeConfig.textPrimary }}
+              >
+                {appConfig.welcomeText}
+              </h1>
+            </div>
+
+            {/* Centered input with rounded-[2.5rem] corners */}
+            <div className="w-full max-w-xl sm:max-w-2xl md:max-w-3xl px-4 sm:px-6">
+              <div
+                className="rounded-[2.5rem] border flex items-end gap-3 px-4 sm:px-5 py-2.5 sm:py-3 shadow-md"
+                style={{
+                  backgroundColor: themeConfig.surface,
+                  borderColor: themeConfig.border,
+                }}
+              >
+                <textarea
+                  ref={textareaRef}
+                  rows={1}
+                  value={input}
+                  placeholder={appConfig.inputPlaceholder}
+                  disabled={isThinking}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="flex-1 max-h-40 py-2 resize-none bg-transparent outline-none overflow-y-auto min-h-10 text-sm sm:text-base"
+                  style={{
+                    color: themeConfig.textPrimary,
+                  }}
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={isThinking || !input.trim()}
+                  className="h-9 w-9 sm:h-10 sm:w-10 rounded-full flex items-center justify-center transition-all disabled:opacity-30 disabled:grayscale hover:opacity-90 shrink-0"
+                  style={{ backgroundColor: themeConfig.primaryColor }}
+                >
+                  <FaArrowUp
+                    color="white"
+                    className="w-4 h-4 sm:w-4.5 sm:h-4.5"
+                  />
+                </button>
+              </div>
+              <p
+                className="mt-2 text-[10px] sm:text-xs text-center"
+                style={{ color: themeConfig.textSecondary }}
+              >
+                {appConfig.footerText}
+              </p>
+            </div>
           </div>
         )}
       </div>
-
-      <div className="w-full shrink-0 px-4 pb-6 pt-2 bg-app-bg z-20">
-        <div className="max-w-2xl mx-auto flex items-end gap-3 p-2.5 rounded-[2.5rem] border bg-app-surface border-app-border">
-          <textarea
-            ref={textareaRef}
-            rows={1}
-            value={input}
-            placeholder={appConfig.inputPlaceholder}
-            disabled={isThinking}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="flex-1 max-h-50 py-2.5 px-4 resize-none bg-transparent outline-none overflow-y-auto min-h-12 text-text-main placeholder-text-ph"
-          />
-          <button
-            onClick={handleSend}
-            disabled={isThinking || !input.trim()}
-            className="h-9 w-9 mb-1 rounded-full flex items-center justify-center transition-all disabled:opacity-20 disabled:grayscale"
-            style={{ backgroundColor: themeConfig.primaryColor }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-5 h-5 text-white"
-            >
-              <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </main>
+    </div>
   );
 }
