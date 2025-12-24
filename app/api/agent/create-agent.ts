@@ -34,6 +34,9 @@ export async function createAgent(): Promise<Agent> {
   const openAiKey = process.env.OPENAI_API_KEY;
   const geminiKey = process.env.GEMINI_API_KEY;
 
+  const openAiModel = process.env.OPENAI_MODEL || "gpt-4o-mini";
+  const geminiModel = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
+
   if (!openAiKey && !geminiKey) {
     throw new Error(
       "I need either an OPENAI_API_KEY or GEMINI_API_KEY in your .env file to power my intelligence."
@@ -49,7 +52,7 @@ export async function createAgent(): Promise<Agent> {
     if (openAiKey) {
       console.log("Initializing with OpenAI...");
       // Standard OpenAI initialization
-      model = openai("gpt-4o-mini");
+      model = openai(openAiModel);
     } else {
       console.log("Initializing with Google Gemini...");
       // Custom Gemini initialization via createOpenAI
@@ -57,7 +60,7 @@ export async function createAgent(): Promise<Agent> {
         baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
         apiKey: geminiKey,
       });
-      model = googleViaOpenAI("gemini-2.5-flash-lite");
+      model = googleViaOpenAI(geminiModel);
     }
 
     // Initialize Agent System Prompt
