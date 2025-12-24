@@ -1,22 +1,20 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 1. Force Next.js to bundle and transpile these packages.
-  // This solves the "require() of ES Module" error by converting 
-  // them into the format the hosted server expects.
+  // 1. ONLY transpile the auth-related packages to fix the "require" error
   transpilePackages: [
-    '@coinbase/agentkit',
-    '@coinbase/agentkit-vercel-ai-sdk',
     'jose', 
     '@coinbase/cdp-sdk'
   ],
 
-  // 2. Remove them from serverExternalPackages
-  // Keeping them here was causing the "require" error on the hosted site.
+  // 2. FORCE the agent-related packages to stay external to fix the ".map" error
+  // This prevents Webpack from mangling the AgentKit internal structure
   serverExternalPackages: [
-    '@noble/hashes',
-    'viem',
+    '@coinbase/agentkit',
+    '@coinbase/agentkit-vercel-ai-sdk',
     '@solana/web3.js',
+    'viem',
+    '@noble/hashes',
     'bs58'
   ],
 
