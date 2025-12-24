@@ -22,7 +22,6 @@
     "@tanstack/react-query": "^5",
     "ai": "^4.1.54",
     "bs58": "^6.0.0",
-    "jose": "^4.15.5",
     "next": "^16.0.10",
     "next-cloudinary": "^6.17.5",
     "react": "^19.2.3",

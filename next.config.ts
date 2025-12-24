@@ -2,11 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // 1. Force these auth-related packages to be bundled.
-  // This prevents the "require() of ES Module" error on Vercel.
   transpilePackages: [
-    'jose', 
-    '@coinbase/cdp-sdk',
-    '@coinbase/agentkit-vercel-ai-sdk'
+    "@coinbase/cdp-sdk",
+    "@coinbase/agentkit-vercel-ai-sdk",
   ],
 
   // 2. Keep these specific Agent/Solana packages as external.
@@ -15,8 +13,6 @@ const nextConfig: NextConfig = {
     '@coinbase/agentkit',
     '@solana/web3.js',
     'viem',
-    '@noble/hashes',
-    'bs58'
   ],
 
   webpack: (config) => {

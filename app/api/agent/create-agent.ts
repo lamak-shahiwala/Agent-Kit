@@ -47,17 +47,17 @@ export async function createAgent(): Promise<Agent> {
 
     // CONDITIONAL LOGIC: Choose provider based on available key
     if (openAiKey) {
-      console.log("Initializing with OpenAI (GPT-4o Mini)...");
+      console.log("Initializing with OpenAI...");
       // Standard OpenAI initialization
       model = openai("gpt-4o-mini");
     } else {
-      console.log("Initializing with Google Gemini (via OpenAI compatibility)...");
+      console.log("Initializing with Google Gemini...");
       // Custom Gemini initialization via createOpenAI
       const googleViaOpenAI = createOpenAI({
         baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
         apiKey: geminiKey,
       });
-      model = googleViaOpenAI("gemini-2.5-flash");
+      model = googleViaOpenAI("gemini-2.5-flash-lite");
     }
 
     // Initialize Agent System Prompt

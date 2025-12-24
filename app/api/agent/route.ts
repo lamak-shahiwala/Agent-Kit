@@ -1,37 +1,48 @@
 import { AgentRequest, AgentResponse } from "@/app/types/api";
 import { NextResponse } from "next/server";
+import { createAgent } from "./create-agent";
 import { Message, generateId, generateText } from "ai";
 
-// 1. Force dynamic behavior
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
-
-// Store messages in-memory
 const messages: Message[] = [];
 
+/**
+ * Handles incoming POST requests to interact with the AgentKit-powered AI agent.
+ * This function processes user messages and streams responses from the agent.
+ *
+ * @function POST
+ * @param {Request & { json: () => Promise<AgentRequest> }} req - The incoming request object containing the user message.
+ * @returns {Promise<NextResponse<AgentResponse>>} JSON response containing the AI-generated reply or an error message.
+ *
+ * @description Sends a single message to the agent and returns the agents' final response.
+ *
+ * @example
+ * const response = await fetch("/api/agent", {
+ *     method: "POST",
+ *     headers: { "Content-Type": "application/json" },
+ *     body: JSON.stringify({ userMessage: input }),
+ * });
+ */
 export async function POST(
   req: Request & { json: () => Promise<AgentRequest> },
 ): Promise<NextResponse<AgentResponse>> {
   try {
-    // 2. Extract user message
+    // 1️. Extract user message from the request body
     const { userMessage } = await req.json();
 
-    // 3. DYNAMICALLY IMPORT the agent creation logic
-    // This prevents the "map of undefined" crash during build because 
-    // the module is not evaluated until this line runs (which only happens at runtime).
-    const { createAgent } = await import("./create-agent");
+    // 2. Get the agent
     const agent = await createAgent();
 
-    // 4. Start streaming/generating response
+    // 3.Start streaming the agent's response
     messages.push({ id: generateId(), role: "user", content: userMessage });
-    
     const { text } = await generateText({
       ...agent,
       messages,
     });
 
+    // 4. Add the agent's response to the messages
     messages.push({ id: generateId(), role: "assistant", content: text });
 
+    // 5️. Return the final response
     return NextResponse.json({ response: text });
   } catch (error) {
     console.error("Error processing request:", error);
