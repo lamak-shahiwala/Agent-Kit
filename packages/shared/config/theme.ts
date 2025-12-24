@@ -1,57 +1,52 @@
+// packages/shared/config/theme.ts
+
 export interface ThemeConfig {
   appLogo: string;
-
   primaryColor: string;
-
   bgLight: string;
   bgDark: string;
-
   surfaceLight: string;
   surfaceDark: string;
-
   textPrimaryLight: string;
   textPrimaryDark: string;
   textSecondaryLight: string;
   textSecondaryDark: string;
   textPlaceholderLight: string;
   textPlaceholderDark: string;
-
   borderLight: string;
   borderDark: string;
-
   thinkingTextLight: string;
   thinkingTextDark: string;
-
   inputShadowLight: string;
   inputShadowDark: string;
 }
 
 export const themeConfig: ThemeConfig = {
-  appLogo: process.env.NEXT_PUBLIC_APP_LOGO!,
+  appLogo: "", // Path to image if you have one, e.g., "/logo.png"
 
-  primaryColor: process.env.NEXT_PUBLIC_PRIMARY_COLOR!,
+  primaryColor: "#10a37f",
 
-  bgLight: process.env.NEXT_PUBLIC_BG_LIGHT!,
-  bgDark: process.env.NEXT_PUBLIC_BG_DARK!,
+  bgLight: "#ffffff",
+  bgDark: "#212121",
 
-  surfaceLight: process.env.NEXT_PUBLIC_SURFACE_LIGHT!,
-  surfaceDark: process.env.NEXT_PUBLIC_SURFACE_DARK!,
+  surfaceLight: "#f4f4f4",
+  surfaceDark: "#2f2f2f",
 
-  textPrimaryLight: process.env.NEXT_PUBLIC_TEXT_PRIMARY_LIGHT!,
-  textPrimaryDark: process.env.NEXT_PUBLIC_TEXT_PRIMARY_DARK!,
+  textPrimaryLight: "#374151",
+  textPrimaryDark: "#ececec",
 
-  textSecondaryLight: process.env.NEXT_PUBLIC_TEXT_SECONDARY_LIGHT!,
-  textSecondaryDark: process.env.NEXT_PUBLIC_TEXT_SECONDARY_DARK!,
+  textSecondaryLight: "#6b7280",
+  textSecondaryDark: "#b4b4b4",
 
-  textPlaceholderLight: process.env.NEXT_PUBLIC_TEXT_PLACEHOLDER_LIGHT!,
-  textPlaceholderDark: process.env.NEXT_PUBLIC_TEXT_PLACEHOLDER_DARK!,
+  textPlaceholderLight: "#9ca3af",
+  textPlaceholderDark: "#6b7280",
 
-  borderLight: process.env.NEXT_PUBLIC_BORDER_LIGHT!,
-  borderDark: process.env.NEXT_PUBLIC_BORDER_DARK!,
+  borderLight: "#e5e5e5",
+  borderDark: "#383838",
 
-  thinkingTextLight: process.env.NEXT_PUBLIC_THINKING_TEXT_LIGHT!,
-  thinkingTextDark: process.env.NEXT_PUBLIC_THINKING_TEXT_DARK!,
+  thinkingTextLight: "#6b7280",
+  thinkingTextDark: "#b4b4b4",
 
-  inputShadowLight: process.env.NEXT_PUBLIC_INPUT_SHADOW_LIGHT!,
-  inputShadowDark: process.env.NEXT_PUBLIC_INPUT_SHADOW_DARK!,
+  inputShadowLight: "shadow-sm",
+  inputShadowDark: "shadow-none",
 };

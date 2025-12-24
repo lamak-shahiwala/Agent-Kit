@@ -1,3 +1,5 @@
+// packages/shared/config/app.ts
+
 export interface AppConfig {
   appName: string;
   appDescription: string;
@@ -8,10 +10,10 @@ export interface AppConfig {
 }
 
 export const appConfig: AppConfig = {
-  appName: process.env.NEXT_PUBLIC_APP_NAME!,
-  appDescription: process.env.NEXT_PUBLIC_APP_DESCRIPTION!,
-  title: process.env.NEXT_PUBLIC_TITLE!,
-  welcomeText: process.env.NEXT_PUBLIC_WELCOME_TEXT!,
-  inputPlaceholder: process.env.NEXT_PUBLIC_INPUT_PLACEHOLDER!,
-  footerText: process.env.NEXT_PUBLIC_FOOTER_TEXT!,
+  appName: "AgentKit",
+  appDescription: "AI Assistant",
+  title: "Agent Kit",
+  welcomeText: "How can I help you today?",
+  inputPlaceholder: "Message Agent...",
+  footerText: "AI can make mistakes. Please check important info.",
 };
