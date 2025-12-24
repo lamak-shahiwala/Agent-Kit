@@ -14,7 +14,9 @@ export default function Home() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messages.length > 0) {
+      endRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages, isThinking]);
 
   useEffect(() => {
@@ -39,8 +41,22 @@ export default function Home() {
     }
   };
 
+  const getBubbleStyle = (isUser: boolean) => {
+    return {
+      backgroundColor: isUser ? "var(--user-bubble)" : "var(--bot-bubble)",
+    };
+  };
+
   return (
-    <main className="flex flex-col h-screen bg-app-bg overflow-hidden">
+    <main
+      className="flex flex-col h-screen bg-app-bg overflow-hidden"
+      style={
+        {
+          "--user-bubble": themeConfig.userBubbleLight,
+          "--bot-bubble": themeConfig.botBubbleLight,
+        } as React.CSSProperties
+      }
+    >
       <div className="h-12 lg:h-5 shrink-0" />
       <div className="flex-1 overflow-y-auto px-4 scrollbar-hide">
         {messages.length > 0 ? (
@@ -55,11 +71,8 @@ export default function Home() {
                   }`}
                 >
                   <div
-                    className={`max-w-[85%] leading-7 ${
-                      isUser
-                        ? "bg-app-surface rounded-2xl px-5 py-2.5"
-                        : "px-0 py-2"
-                    } text-text-main`}
+                    className={`max-w-[85%] leading-7 rounded-2xl px-5 py-2.5 text-text-main`}
+                    style={getBubbleStyle(isUser)}
                   >
                     {!isUser && (
                       <div className="mb-1 opacity-80 text-xs font-display font-bold uppercase tracking-widest text-text-sec">
@@ -85,7 +98,6 @@ export default function Home() {
             <div ref={endRef} className="h-4" />
           </div>
         ) : (
-          /* Empty State - Centered */
           <div className="flex flex-col items-center justify-center h-full opacity-90 -mt-10">
             <h1 className="text-4xl font-display font-medium tracking-tight text-text-main text-center mb-8">
               {appConfig.welcomeText}
@@ -94,8 +106,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* 3. Fixed Input Area */}
-      {/* shrink-0 prevents it from squishing. It sits naturally below the scroll area. */}
       <div className="w-full shrink-0 px-4 pb-6 pt-2 bg-app-bg z-20">
         <div className="max-w-2xl mx-auto flex items-end gap-3 p-2.5 rounded-[2.5rem] border bg-app-surface border-app-border">
           <textarea

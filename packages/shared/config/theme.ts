@@ -19,10 +19,15 @@ export interface ThemeConfig {
   thinkingTextDark: string;
   inputShadowLight: string;
   inputShadowDark: string;
+  // New Bubble Colors
+  userBubbleLight: string;
+  userBubbleDark: string;
+  botBubbleLight: string;
+  botBubbleDark: string;
 }
 
 export const themeConfig: ThemeConfig = {
-  appLogo: "", // Path to image if you have one, e.g., "/logo.png"
+  appLogo: "", 
 
   primaryColor: "#10a37f",
 
@@ -49,4 +54,10 @@ export const themeConfig: ThemeConfig = {
 
   inputShadowLight: "shadow-sm",
   inputShadowDark: "shadow-none",
+
+  userBubbleLight: "#e0f2fe", 
+  userBubbleDark: "#0c4a6e",  
+  
+  botBubbleLight: "#f3f4f6",  
+  botBubbleDark: "#374151",
 };
