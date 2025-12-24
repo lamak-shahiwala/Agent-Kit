@@ -27,7 +27,9 @@
     "react-dom": "^19.2.3",
     "react-markdown": "^10.0.0",
     "viem": "^2.24.1",
-    "wagmi": "^2.11.0"
+    "wagmi": "^2.11.0",
+    "jose": "^5.9.6",
+    "@coinbase/cdp-sdk": "latest"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",

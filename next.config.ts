@@ -1,17 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 1. ONLY transpile the auth-related packages to fix the "require" error
+  // 1. Force these auth-related packages to be bundled.
+  // This prevents the "require() of ES Module" error on Vercel.
   transpilePackages: [
     'jose', 
-    '@coinbase/cdp-sdk'
+    '@coinbase/cdp-sdk',
+    '@coinbase/agentkit-vercel-ai-sdk'
   ],
 
-  // 2. FORCE the agent-related packages to stay external to fix the ".map" error
-  // This prevents Webpack from mangling the AgentKit internal structure
+  // 2. Keep these specific Agent/Solana packages as external.
+  // This is required to prevent the ".map of undefined" error.
   serverExternalPackages: [
     '@coinbase/agentkit',
-    '@coinbase/agentkit-vercel-ai-sdk',
     '@solana/web3.js',
     'viem',
     '@noble/hashes',
