@@ -1,56 +1,46 @@
-import { AgentRequest, AgentResponse } from "@/app/types/api";
 import { NextResponse } from "next/server";
 import { createAgent } from "./create-agent";
-import { Message, generateId, generateText } from "ai";
+import { generateId, generateText, Message } from "ai";
+import { AgentRequest, AgentResponse } from "@/app/types/api";
 
-const messages: Message[] = [];
-
-/**
- * Handles incoming POST requests to interact with the AgentKit-powered AI agent.
- * This function processes user messages and streams responses from the agent.
- *
- * @function POST
- * @param {Request & { json: () => Promise<AgentRequest> }} req - The incoming request object containing the user message.
- * @returns {Promise<NextResponse<AgentResponse>>} JSON response containing the AI-generated reply or an error message.
- *
- * @description Sends a single message to the agent and returns the agents' final response.
- *
- * @example
- * const response = await fetch("/api/agent", {
- *     method: "POST",
- *     headers: { "Content-Type": "application/json" },
- *     body: JSON.stringify({ userMessage: input }),
- * });
- */
 export async function POST(
-  req: Request & { json: () => Promise<AgentRequest> },
+  req: Request
 ): Promise<NextResponse<AgentResponse>> {
   try {
-    // 1️. Extract user message from the request body
+    // 1. Parse request body
     const { userMessage } = await req.json();
 
-    // 2. Get the agent
+    // 2. Create agent
     const agent = await createAgent();
 
-    // 3.Start streaming the agent's response
-    messages.push({ id: generateId(), role: "user", content: userMessage });
+    // 3. Create messages PER REQUEST
+    const messages: Message[] = [
+      {
+        id: generateId(),
+        role: "user",
+        content: userMessage,
+      },
+    ];
+
+    // 4. Generate response
     const { text } = await generateText({
       ...agent,
       messages,
     });
 
-    // 4. Add the agent's response to the messages
-    messages.push({ id: generateId(), role: "assistant", content: text });
-
-    // 5️. Return the final response
+    // 5. Return JSON response
     return NextResponse.json({ response: text });
   } catch (error) {
     console.error("Error processing request:", error);
-    return NextResponse.json({
-      error:
-        error instanceof Error
-          ? error.message
-          : "I'm sorry, I encountered an issue processing your message. Please try again later.",
-    });
+
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 }
