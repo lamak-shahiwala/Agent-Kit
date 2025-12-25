@@ -3,6 +3,10 @@ import { createAgent } from "./create-agent";
 import { generateId, generateText, Message } from "ai";
 import { AgentRequest, AgentResponse } from "@/app/types/api";
 
+export async function GET() {
+  return NextResponse.json({ status: "ok" });
+}
+
 export async function POST(
   req: Request
 ): Promise<NextResponse<AgentResponse>> {

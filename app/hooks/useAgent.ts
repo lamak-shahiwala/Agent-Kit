@@ -16,8 +16,15 @@ async function messageAgent(userMessage: string): Promise<string | null> {
     const response = await fetch("/api/agent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userMessage } as AgentRequest),
+      body: JSON.stringify({ userMessage }),
     });
+
+    // ✅ HANDLE NON-200
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("API error:", response.status, text);
+      return null;
+    }
 
     const data = (await response.json()) as AgentResponse;
     return data.response ?? data.error ?? null;
@@ -26,6 +33,7 @@ async function messageAgent(userMessage: string): Promise<string | null> {
     return null;
   }
 }
+
 
 /**
  *
