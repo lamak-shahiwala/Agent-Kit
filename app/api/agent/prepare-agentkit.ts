@@ -9,9 +9,6 @@ import {
   walletActionProvider,
   WalletProvider,
 } from "@coinbase/agentkit";
-import fs from "fs";
-
-const WALLET_DATA_FILE = "wallet_data.txt";
 
 export async function prepareAgentkitAndWalletProvider(): Promise<{
   agentkit: AgentKit;
@@ -31,16 +28,6 @@ export async function prepareAgentkitAndWalletProvider(): Promise<{
     networkId: process.env.NETWORK_ID || "mainnet-beta",
     walletType: "server",
   };
-
-  // Safe wallet data loading
-  if (fs.existsSync(WALLET_DATA_FILE)) {
-    try {
-      const saved = JSON.parse(fs.readFileSync(WALLET_DATA_FILE, "utf8"));
-      Object.assign(config, saved);
-    } catch (e) {
-      console.warn("Could not load wallet_data.txt");
-    }
-  }
 
   const walletProvider = await PrivyWalletProvider.configureWithWallet(config);
   
