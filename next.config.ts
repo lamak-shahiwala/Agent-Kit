@@ -1,17 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 1. Force these packages to be transpiled so the bundler handles ESM/CJS interop.
+  // 1. Transpile only what is necessary for CJS/ESM interop on Vercel
   transpilePackages: [
-    "@coinbase/cdp-sdk",
-    "@coinbase/agentkit", // Moved from external to transpile
+    "jose",
     "@coinbase/agentkit-vercel-ai-sdk",
-    "jose", 
-    "viem",
+    "@coinbase/cdp-sdk",
   ],
 
-  // 2. Only keep pure native/Solana binaries here if absolutely necessary.
+  // 2. KEEP THESE EXTERNAL. This prevents the "Y is not a function" error
+  // because it tells Webpack NOT to bundle these into the route.js file.
   serverExternalPackages: [
+    "viem",
+    "@noble/hashes",
+    "@coinbase/agentkit",
     "@solana/web3.js",
   ],
 

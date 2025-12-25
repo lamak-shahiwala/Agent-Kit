@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createAgent } from "./create-agent";
 import { generateId, generateText, Message } from "ai";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   return NextResponse.json({ ok: "get" });
 }
