@@ -1,18 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 1. Force these auth-related packages to be bundled.
+  // 1. Force these packages to be transpiled so the bundler handles ESM/CJS interop.
   transpilePackages: [
     "@coinbase/cdp-sdk",
+    "@coinbase/agentkit", // Moved from external to transpile
     "@coinbase/agentkit-vercel-ai-sdk",
+    "jose", 
+    "viem",
   ],
 
-  // 2. Keep these specific Agent/Solana packages as external.
-  // This is required to prevent the ".map of undefined" error.
+  // 2. Only keep pure native/Solana binaries here if absolutely necessary.
   serverExternalPackages: [
-    '@coinbase/agentkit',
-    '@solana/web3.js',
-    'viem',
+    "@solana/web3.js",
   ],
 
   webpack: (config) => {
